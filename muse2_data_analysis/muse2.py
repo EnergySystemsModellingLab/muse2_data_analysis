@@ -40,7 +40,13 @@ def run_muse2(*args: str) -> str:
     Raises an exception if muse2 is not found.
     """
     muse2 = find_muse2()
-    output = sp.run((muse2, *args), text=True, stdout=sp.PIPE, stderr=sp.STDOUT)
+    output = sp.run(
+        (muse2, *args),
+        text=True,
+        stdout=sp.PIPE,
+        stderr=sp.STDOUT,
+        env={"MUSE2_USE_DEFAULT_SETTINGS": "1"},  # ignore user's settings file
+    )
     if output.returncode != 0:
         raise RuntimeError(f"Error running muse2: {output.stdout}")
 
