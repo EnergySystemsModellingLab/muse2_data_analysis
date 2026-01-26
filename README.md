@@ -40,7 +40,7 @@ There are some example notebooks in the [`notebooks`] folder to get you started.
 [uv]: https://docs.astral.sh/uv
 [Download and install uv]: https://docs.astral.sh/uv/getting-started/installation/
 [uv activate]: https://docs.astral.sh/uv/pip/environments/
-[`notebooks`] ./notebooks
+[`notebooks`]: ./notebooks
 
 ## Copyright
 
