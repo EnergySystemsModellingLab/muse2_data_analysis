@@ -1,1 +1,1 @@
-"""Unit tests for MyProject."""
+"""Unit tests for muse2_data_analysis."""
