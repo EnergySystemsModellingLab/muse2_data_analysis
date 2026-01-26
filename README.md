@@ -1,28 +1,18 @@
 # MUSE2 data analysis
 
-Python scripts and Jupyter notebooks for analysing and visualising MUSE2 data files.
+> :warning: **Note that this repository is currently a work in progress.** :warning:
 
-This is a Python application that uses [uv] for packaging and dependency management.
-It  provides [`pre-commit`][pre-commit] hooks for various linters
-and formatters and automated tests using [`pytest`][pytest] and [GitHub Actions].
-Pre-commit hooks are automatically kept updated with a dedicated GitHub Action, this can
-be removed and replaced with [pre-commit.ci] if using a public repo. The package version
-is dynamically generated from the most recent git tag using
-[`setuptools-scm`][setuptools-scm].
+This repository contains Python scripts and Jupyter notebooks for analysing and
+visualising [MUSE2] data files.
 
-It was developed by the [Imperial College Research Software Engineering Team].
+We recommend using [uv] for installing dependencies and managing your virtual
+environment.
 
 ## Usage
 
 To get started:
 
 1. [Download and install uv] following the instructions for your OS.
-1. Activate a git repository (required for `pre-commit` and the package versioning with
-`setuptools-scm`):
-
-    ```bash
-    git init
-    ```
 
 1. Install the package and dependencies and set up the virtual environment:
 
@@ -44,53 +34,14 @@ the virtual environment (see [uv activate] for more info):
     uv run <command>
     ```
 
-1. Install the pre-commit git hooks:
+There are some example notebooks in the [`notebooks`] folder to get you started.
 
-    ```bash
-    uv run pre-commit install
-    ```
-
-1. Update the pre-commit hooks
-
-    ```bash
-    uv run pre-commit autoupdate
-    ```
-
-1. Run the main app:
-
-    ```bash
-    uv run python -m muse2_data_analysis
-    ```
-
-1. Run the tests:
-
-    ```bash
-    uv run pytest
-    ```
-
-1. Create an initial commit (it's possible there might be some failures in pre-commit):
-
-    ```bash
-    git add .
-    git commit -m "Initial commit"
-    ```
-
-## Updating Dependencies
-
-Use the commands `uv add <package>` and `uv remove <package>` to add or remove dependencies.
-
-- Use the optional flag `--dev` to add/remove development dependencies.
-- Include the optional flag `--group <group-name>` to add/remove dependencies from specific groups.
-- These will automatically update the `pyproject.toml` file.
-
-For further information, see the [uv] docs for managing dependencies.
-
+[MUSE2]: https://github.com/EnergySystemsModellingLab/MUSE2
 [uv]: https://docs.astral.sh/uv
-[pre-commit]: https://pre-commit.com/
-[pytest]: https://pytest.org/
-[GitHub Actions]: https://github.com/features/actions
-[pre-commit.ci]: https://pre-commit.ci
-[setuptools-scm]: https://setuptools-scm.readthedocs.io/en/latest/
-[Imperial College Research Software Engineering Team]: https://www.imperial.ac.uk/admin-services/ict/self-service/research-support/rcs/service-offering/research-software-engineering/
 [Download and install uv]: https://docs.astral.sh/uv/getting-started/installation/
 [uv activate]: https://docs.astral.sh/uv/pip/environments/
+[`notebooks`] ./notebooks
+
+## Copyright
+
+Copyright © 2026 Imperial College London
