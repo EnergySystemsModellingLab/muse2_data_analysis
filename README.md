@@ -42,6 +42,25 @@ the virtual environment (see [uv docs] for more info).
     uv run <command>
     ```
 
+1. Make sure the Python code can find your MUSE2 installation. (If you have not yet
+installed MUSE2, [follow the instructions here][install-muse2].)
+
+    There are two ways you can do this:
+
+    1. Make sure the `muse2` executable is on your [`PATH`]:
+
+        - [Instructions for Windows][windows-path]
+        - [Instructions for Linux][linux-path]
+        - [Instructions for macOS][macos-path]
+
+        (If you installed MUSE2 with `cargo`, it should already be on your `PATH`.)
+
+    1. Set the `MUSE2_PATH` environment variable to the full path of the `muse2`
+       executable file.
+
+       You can either do this by [setting the environment variable from within
+       Jupyter][jupyter-envvar] or from your shell before you launch Jupyter notebook.
+
 There are some example notebooks in the [`notebooks`] folder to get you started. You can
 view these with Jupyter notebook, like so:
 
@@ -56,6 +75,12 @@ If you are using Visual Studio Code, you can also view them directly in your IDE
 [uv]: https://docs.astral.sh/uv
 [Download and install uv]: https://docs.astral.sh/uv/getting-started/installation/
 [uv docs]: https://docs.astral.sh/uv/pip/environments/#creating-a-virtual-environment
+[install-muse2]: https://energysystemsmodellinglab.github.io/MUSE2/#getting-started
+[`PATH`]: https://en.wikipedia.org/wiki/PATH_(variable)
+[windows-path]: https://stackoverflow.com/a/41895179
+[linux-path]: https://unix.stackexchange.com/questions/3809/how-can-i-make-a-program-executable-from-everywhere
+[macos-path]: https://apple.stackexchange.com/a/41586
+[jupyter-envvar]: https://stackoverflow.com/a/44251637
 [`notebooks`]: ./notebooks
 [the Jupyter extension]: https://code.visualstudio.com/docs/datascience/jupyter-notebooks
 
