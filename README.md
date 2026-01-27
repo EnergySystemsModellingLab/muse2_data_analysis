@@ -21,14 +21,22 @@ To get started:
     ```
 
 1. Activate the virtual environment, or just preface your commands with `uv run` to use
-the virtual environment (see [uv activate] for more info):
+the virtual environment (see [uv docs] for more info).
+
+    To activate on Linux/macOS:
 
     ```bash
     source .venv/bin/activate
     <command>
     ```
 
-    or
+    To activate on Windows:
+
+    ```powershell
+    .venv\Scripts\activate
+    ```
+
+    Or run the command directly:
 
     ```bash
     uv run <command>
@@ -39,7 +47,7 @@ There are some example notebooks in the [`notebooks`] folder to get you started.
 [MUSE2]: https://github.com/EnergySystemsModellingLab/MUSE2
 [uv]: https://docs.astral.sh/uv
 [Download and install uv]: https://docs.astral.sh/uv/getting-started/installation/
-[uv activate]: https://docs.astral.sh/uv/pip/environments/
+[uv docs]: https://docs.astral.sh/uv/pip/environments/#creating-a-virtual-environment
 [`notebooks`]: ./notebooks
 
 ## Copyright
