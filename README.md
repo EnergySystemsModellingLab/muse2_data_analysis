@@ -42,13 +42,22 @@ the virtual environment (see [uv docs] for more info).
     uv run <command>
     ```
 
-There are some example notebooks in the [`notebooks`] folder to get you started.
+There are some example notebooks in the [`notebooks`] folder to get you started. You can
+view these with Jupyter notebook, like so:
+
+```bash
+uv run jupyter notebook
+```
+
+If you are using Visual Studio Code, you can also view them directly in your IDE with
+[the Jupyter extension].
 
 [MUSE2]: https://github.com/EnergySystemsModellingLab/MUSE2
 [uv]: https://docs.astral.sh/uv
 [Download and install uv]: https://docs.astral.sh/uv/getting-started/installation/
 [uv docs]: https://docs.astral.sh/uv/pip/environments/#creating-a-virtual-environment
 [`notebooks`]: ./notebooks
+[the Jupyter extension]: https://code.visualstudio.com/docs/datascience/jupyter-notebooks
 
 ## Copyright
 
