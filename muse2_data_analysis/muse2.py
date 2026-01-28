@@ -26,7 +26,7 @@ def find_muse2() -> Path:
     if not path:
         raise RuntimeError(
             "Could not find path to muse2. Either set the MUSE2_PATH environment "
-            "variable or installing muse2 to your PATH (e.g. by running 'cargo "
+            "variable or install muse2 to your PATH (e.g. by running 'cargo "
             "install muse2')"
         )
 
