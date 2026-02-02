@@ -1,0 +1,17 @@
+name: Check links in Markdown files
+on:
+  schedule:
+    - cron: 0 0 * * 1   # midnight every Monday
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check-links:
+    name: Lychee link checker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - id: lychee
+        uses: lycheeverse/lychee-action@v2
