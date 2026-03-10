@@ -46,7 +46,7 @@ jobs:
         run: |
           TAG=$(curl -sSf \
             -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/EnergySystemsModellingLab/MUSE2/releases/latest \
             | jq -r '.tag_name')
 
