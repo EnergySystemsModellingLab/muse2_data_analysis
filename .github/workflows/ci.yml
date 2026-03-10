@@ -14,15 +14,15 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            python-version: "3.14"
+            python-version: '3.14'
             muse2_asset: muse2_linux.tar.gz
             muse2_exe: muse2
           - os: windows-latest
-            python-version: "3.14"
+            python-version: '3.14'
             muse2_asset: muse2_windows.zip
             muse2_exe: muse2.exe
           - os: macos-latest
-            python-version: "3.14"
+            python-version: '3.14'
             muse2_asset: muse2_macos_arm.tar.gz
             muse2_exe: muse2
 
