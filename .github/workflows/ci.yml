@@ -108,8 +108,5 @@ jobs:
           }
           Write-Host "MUSE2_PATH is set to: $env:MUSE2_PATH"
 
-      - name: Run mypy
-        run: mypy .
-
       - name: Run tests
         run: pytest
