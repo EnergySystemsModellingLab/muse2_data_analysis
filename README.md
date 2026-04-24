@@ -1,5 +1,7 @@
 # MUSE2 data analysis
 
+[![codecov](https://codecov.io/gh/EnergySystemsModellingLab/muse2_data_analysis/graph/badge.svg?token=0B706BGSJ8)](https://codecov.io/gh/EnergySystemsModellingLab/muse2_data_analysis)
+
 > :warning: **Note that this repository is currently a work in progress.** :warning:
 
 This repository contains Python scripts and Jupyter notebooks for analysing and
