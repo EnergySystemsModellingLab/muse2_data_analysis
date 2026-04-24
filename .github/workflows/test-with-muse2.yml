@@ -1,0 +1,71 @@
+name: Test with MUSE2 source
+
+on:
+  workflow_call:
+    inputs:
+      muse2_source:
+        description: Which MUSE2 source to test against (release or main)
+        required: true
+        type: string
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+
+jobs:
+  test:
+    name: Test against MUSE2 (${{ inputs.muse2_source }}) on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: '3.14'
+            muse2_exe: muse2
+          - os: windows-latest
+            python-version: '3.14'
+            muse2_exe: muse2.exe
+          - os: macos-latest
+            python-version: '3.14'
+            muse2_exe: muse2
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          prune-cache: false
+          activate-environment: true
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Setup MUSE2 from main
+        if: inputs.muse2_source == 'main'
+        uses: ./.github/actions/setup-muse2-main
+        with:
+          muse2_exe: ${{ matrix.muse2_exe }}
+
+      - name: Setup MUSE2 from latest release
+        if: inputs.muse2_source == 'release'
+        uses: ./.github/actions/setup-muse2-release
+        with:
+          github_token: ${{ github.token }}
+          muse2_exe: ${{ matrix.muse2_exe }}
+
+      - name: Verify MUSE2 installation
+        uses: ./.github/actions/verify-muse2
+
+      - name: Run tests
+        run: pytest
+
+      - name: Upload coverage to Codecov
+        # Latest linux release only - they should all be the same
+        if: runner.os == 'Linux' && inputs.muse2_source == 'release'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: true

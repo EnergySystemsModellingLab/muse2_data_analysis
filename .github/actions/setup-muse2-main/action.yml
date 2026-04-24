@@ -1,0 +1,32 @@
+name: Setup MUSE2 from main
+description: Build and configure MUSE2_PATH from the MUSE2 main branch via cargo install
+inputs:
+  muse2_exe:
+    description: MUSE2 executable name for the current OS
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+
+    - name: Build and install MUSE2 from main (cargo)
+      shell: bash
+      run: |
+        cargo install \
+          --git https://github.com/EnergySystemsModellingLab/MUSE2 \
+          --rev main \
+          --root "$GITHUB_WORKSPACE/muse2_cargo_root"
+
+    - name: Set MUSE2_PATH (Linux / macOS)
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: bash
+      run: |
+        echo "MUSE2_PATH=${{ github.workspace }}/muse2_cargo_root/bin/${{ inputs.muse2_exe }}" >> "$GITHUB_ENV"
+
+    - name: Set MUSE2_PATH (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $exePath = "${{ github.workspace }}\muse2_cargo_root\bin\${{ inputs.muse2_exe }}"
+        echo "MUSE2_PATH=$exePath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
