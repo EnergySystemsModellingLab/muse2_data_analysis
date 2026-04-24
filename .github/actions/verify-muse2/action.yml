@@ -1,0 +1,24 @@
+name: Verify MUSE2 installation
+description: Validate that MUSE2_PATH points to an executable file for the current OS
+runs:
+  using: composite
+  steps:
+    - name: Verify MUSE2_PATH (Linux / macOS)
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: bash
+      run: |
+        if [[ ! -f "$MUSE2_PATH" ]]; then
+          echo "::error::MUSE2 executable not found at: $MUSE2_PATH"
+          exit 1
+        fi
+        echo "MUSE2_PATH is set to: $MUSE2_PATH"
+
+    - name: Verify MUSE2_PATH (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        if (-not (Test-Path -Path $env:MUSE2_PATH -PathType Leaf)) {
+          Write-Error "MUSE2 executable not found at: $env:MUSE2_PATH"
+          exit 1
+        }
+        Write-Host "MUSE2_PATH is set to: $env:MUSE2_PATH"
