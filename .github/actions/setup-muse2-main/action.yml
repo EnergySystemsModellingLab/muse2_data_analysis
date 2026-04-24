@@ -15,7 +15,7 @@ runs:
       run: |
         cargo install \
           --git https://github.com/EnergySystemsModellingLab/MUSE2 \
-          --rev main \
+          --branch main \
           --root "$GITHUB_WORKSPACE/muse2_cargo_root"
 
     - name: Set MUSE2_PATH (Linux / macOS)
