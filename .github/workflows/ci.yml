@@ -1,4 +1,4 @@
-name: Test and build
+name: Test against MUSE2
 on:
   push:
     branches: [main]
@@ -8,14 +8,14 @@ on:
 
 jobs:
   test_release:
-    name: Test against latest MUSE2 release
+    name: Latest MUSE2 release
     uses: ./.github/workflows/test-with-muse2.yml
     with:
       muse2_source: release
     secrets: inherit
 
   test_main:
-    name: Test against MUSE2 main
+    name: Current MUSE2 main branch
     uses: ./.github/workflows/test-with-muse2.yml
     with:
       muse2_source: main

@@ -1,4 +1,4 @@
-name: Test with MUSE2 source
+name: Test with MUSE2
 
 on:
   workflow_call:
@@ -13,7 +13,7 @@ on:
 
 jobs:
   test:
-    name: Test against MUSE2 (${{ inputs.muse2_source }}) on ${{ matrix.os }}
+    name: Run Pytest
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
