@@ -32,13 +32,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Validate muse2_source input
-        run: |
-          if [[ "${{ inputs.muse2_source }}" != "release" && "${{ inputs.muse2_source }}" != "main" ]]; then
-            echo "::error::muse2_source must be either 'release' or 'main', got: ${{ inputs.muse2_source }}"
-            exit 1
-          fi
-
       - name: Validate CODECOV_TOKEN for coverage upload
         if: runner.os == 'Linux' && inputs.muse2_source == 'release'
         run: |
