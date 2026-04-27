@@ -10,30 +10,16 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Get latest MUSE2 release tag
-      id: muse2_release
-      shell: bash
-      run: |
-        TAG=$(curl -sSf \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ inputs.github_token }}" \
-          https://api.github.com/repos/EnergySystemsModellingLab/MUSE2/releases/latest \
-          | jq -r '.tag_name')
-
-        if [[ -z "$TAG" || "$TAG" == "null" ]]; then
-          echo "::error::Failed to retrieve latest MUSE2 release tag."
-          exit 1
-        fi
-
-        echo "Resolved latest MUSE2 release: $TAG"
-        echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-
     - name: Download MUSE2 release asset
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
       run: |
-        curl -sSfL \
-          "https://github.com/EnergySystemsModellingLab/MUSE2/releases/download/${{ steps.muse2_release.outputs.tag }}/${{ runner.os == 'Windows' && 'muse2_windows.zip' || runner.os == 'macOS' && 'muse2_macos_arm.tar.gz' || 'muse2_linux.tar.gz' }}" \
-          --output "muse2_asset_download"
+        gh release download \
+          --repo EnergySystemsModellingLab/MUSE2 \
+          --pattern "${{ runner.os == 'Windows' && 'muse2_windows.zip' || runner.os == 'macOS' && 'muse2_macos_arm.tar.gz' || 'muse2_linux.tar.gz' }}" \
+          --output "muse2_asset_download" \
+          --clobber
 
     - name: Extract and set MUSE2_PATH (Linux / macOS)
       if: runner.os == 'Linux' || runner.os == 'macOS'
