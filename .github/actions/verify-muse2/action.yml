@@ -11,6 +11,10 @@ runs:
           echo "::error::MUSE2 executable not found at: $MUSE2_PATH"
           exit 1
         fi
+        if [[ ! -x "$MUSE2_PATH" ]]; then
+          echo "::error::MUSE2 file at $MUSE2_PATH is not executable"
+          exit 1
+        fi
         echo "MUSE2_PATH is set to: $MUSE2_PATH"
 
     - name: Verify MUSE2_PATH (Windows)
@@ -19,6 +23,12 @@ runs:
       run: |
         if (-not (Test-Path -Path $env:MUSE2_PATH -PathType Leaf)) {
           Write-Error "MUSE2 executable not found at: $env:MUSE2_PATH"
+          exit 1
+        }
+        $executableExtensions = @('.exe', '.com', '.bat', '.cmd', '.ps1')
+        $extension = [System.IO.Path]::GetExtension($env:MUSE2_PATH).ToLower()
+        if ($executableExtensions -notcontains $extension) {
+          Write-Error "MUSE2 file at $env:MUSE2_PATH does not have an executable extension"
           exit 1
         }
         Write-Host "MUSE2_PATH is set to: $env:MUSE2_PATH"
