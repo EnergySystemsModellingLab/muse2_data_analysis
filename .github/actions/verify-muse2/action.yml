@@ -25,7 +25,7 @@ runs:
           Write-Error "MUSE2 executable not found at: $env:MUSE2_PATH"
           exit 1
         }
-        $executableExtensions = @('.exe', '.com', '.bat', '.cmd', '.ps1')
+        $executableExtensions = @('.exe')
         $extension = [System.IO.Path]::GetExtension($env:MUSE2_PATH).ToLower()
         if ($executableExtensions -notcontains $extension) {
           Write-Error "MUSE2 file at $env:MUSE2_PATH does not have an executable extension"
