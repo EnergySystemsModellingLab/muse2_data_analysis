@@ -9,7 +9,7 @@ on:
         type: string
     secrets:
       CODECOV_TOKEN:
-        required: false
+        required: true
 
 jobs:
   test:
@@ -31,14 +31,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-
-      - name: Validate CODECOV_TOKEN for coverage upload
-        if: runner.os == 'Linux' && inputs.muse2_source == 'release'
-        run: |
-          if [[ -z "${{ secrets.CODECOV_TOKEN }}" ]]; then
-            echo "::error::CODECOV_TOKEN secret is required for coverage upload on Linux release builds"
-            exit 1
-          fi
 
       - uses: astral-sh/setup-uv@v7
         with:
