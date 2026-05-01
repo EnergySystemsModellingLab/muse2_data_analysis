@@ -1,0 +1,15 @@
+name: Setup MUSE2 from main
+description: Build and install MUSE2 from the MUSE2 main branch via cargo install
+runs:
+  using: composite
+  steps:
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+
+    - name: Build and install MUSE2 from main (cargo)
+      shell: bash
+      run: |
+        cargo install \
+          --git https://github.com/EnergySystemsModellingLab/MUSE2 \
+          --branch main \
+          --locked

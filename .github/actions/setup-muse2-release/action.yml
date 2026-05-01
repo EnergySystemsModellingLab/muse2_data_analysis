@@ -1,0 +1,41 @@
+name: Setup MUSE2 from latest release
+description: Download latest MUSE2 release asset for current OS and configure MUSE2_PATH
+inputs:
+  github_token:
+    description: GitHub token for API access
+    required: true
+  muse2_exe:
+    description: MUSE2 executable name for the current OS
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Download MUSE2 release asset
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: |
+        gh release download \
+          --repo EnergySystemsModellingLab/MUSE2 \
+          --pattern "${{ runner.os == 'Windows' && 'muse2_windows.zip' || runner.os == 'macOS' && 'muse2_macos_arm.tar.gz' || 'muse2_linux.tar.gz' }}" \
+          --output "muse2_asset_download" \
+          --clobber
+
+    - name: Extract and set MUSE2_PATH (Linux / macOS)
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: bash
+      run: |
+        mkdir -p muse2_bin
+        tar -xf muse2_asset_download -C muse2_bin
+        chmod +x "muse2_bin/${{ inputs.muse2_exe }}"
+        echo "MUSE2_PATH=${{ github.workspace }}/muse2_bin/${{ inputs.muse2_exe }}" >> "$GITHUB_ENV"
+
+    - name: Extract and set MUSE2_PATH (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Force -Path muse2_bin | Out-Null
+        Rename-Item -Path "muse2_asset_download" -NewName "muse2_asset_download.zip"
+        Expand-Archive -Path "muse2_asset_download.zip" -DestinationPath muse2_bin -Force
+        $exePath = "${{ github.workspace }}\muse2_bin\${{ inputs.muse2_exe }}"
+        echo "MUSE2_PATH=$exePath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append

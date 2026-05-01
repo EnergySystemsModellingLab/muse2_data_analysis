@@ -1,0 +1,68 @@
+name: Verify MUSE2 installation
+description: Validate that muse2 is available via PATH or MUSE2_PATH for the current OS
+runs:
+  using: composite
+  steps:
+    - name: Verify muse2 location (Linux / macOS)
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        path_from_path="$(command -v muse2 || true)"
+        resolved_muse2="${path_from_path:-${MUSE2_PATH:-}}"
+
+        if [[ -z "$resolved_muse2" ]]; then
+          echo "::error::Could not find muse2 on PATH and MUSE2_PATH is not set"
+          exit 1
+        fi
+
+        if [[ ! -f "$resolved_muse2" ]]; then
+          echo "::error::MUSE2 executable not found at: $resolved_muse2"
+          exit 1
+        fi
+
+        if [[ ! -x "$resolved_muse2" ]]; then
+          echo "::error::MUSE2 file at $resolved_muse2 is not executable"
+          exit 1
+        fi
+
+        if [[ -n "$path_from_path" ]]; then
+          echo "Found muse2 on PATH: $resolved_muse2"
+        else
+          echo "Using MUSE2_PATH: $resolved_muse2"
+        fi
+
+        echo "MUSE2_PATH=$resolved_muse2" >> "$GITHUB_ENV"
+
+    - name: Verify muse2 location (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $pathCommand = Get-Command muse2 -ErrorAction SilentlyContinue
+        $resolvedMuse2 = if ($pathCommand) { $pathCommand.Source } else { $env:MUSE2_PATH }
+
+        if ([string]::IsNullOrWhiteSpace($resolvedMuse2)) {
+          Write-Error "Could not find muse2 on PATH and MUSE2_PATH is not set"
+          exit 1
+        }
+
+        if (-not (Test-Path -Path $resolvedMuse2 -PathType Leaf)) {
+          Write-Error "MUSE2 executable not found at: $resolvedMuse2"
+          exit 1
+        }
+
+        $extension = [System.IO.Path]::GetExtension($resolvedMuse2).ToLowerInvariant()
+        if ($extension -ne '.exe') {
+          Write-Error "MUSE2 file at $resolvedMuse2 does not have an executable extension"
+          exit 1
+        }
+
+        if ($pathCommand) {
+          Write-Host "Found muse2 on PATH: $resolvedMuse2"
+        }
+        else {
+          Write-Host "Using MUSE2_PATH: $resolvedMuse2"
+        }
+
+        "MUSE2_PATH=$resolvedMuse2" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append

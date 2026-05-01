@@ -1,120 +1,24 @@
-name: Test and build
+name: Test against MUSE2
 on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: 0 5 * * 1
   workflow_dispatch:
   workflow_call:
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            python-version: '3.14'
-            muse2_asset: muse2_linux.tar.gz
-            muse2_exe: muse2
-          - os: windows-latest
-            python-version: '3.14'
-            muse2_asset: muse2_windows.zip
-            muse2_exe: muse2.exe
-          - os: macos-latest
-            python-version: '3.14'
-            muse2_asset: muse2_macos_arm.tar.gz
-            muse2_exe: muse2
+  test_release:
+    name: Latest MUSE2 release
+    uses: ./.github/workflows/test-with-muse2.yml
+    with:
+      muse2_source: release
+    secrets: inherit
 
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-          prune-cache: false
-          activate-environment: true
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: uv sync
-
-      # Query the GitHub API for the latest MUSE2 release tag (e.g. "v2.0.0").
-      # The tag is written to GITHUB_OUTPUT so subsequent steps can reference it.
-      - name: Get latest MUSE2 release tag
-        id: muse2_release
-        shell: bash
-        run: |
-          TAG=$(curl -sSf \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ github.token }}" \
-            https://api.github.com/repos/EnergySystemsModellingLab/MUSE2/releases/latest \
-            | jq -r '.tag_name')
-
-          if [[ -z "$TAG" || "$TAG" == "null" ]]; then
-            echo "::error::Failed to retrieve latest MUSE2 release tag."
-            exit 1
-          fi
-
-          echo "Resolved latest MUSE2 release: $TAG"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-
-      # Download the platform-appropriate MUSE2 release asset.
-      # 'shell: bash' is used on all platforms
-      - name: Download MUSE2 release asset
-        shell: bash
-        run: |
-          curl -sSfL \
-            "https://github.com/EnergySystemsModellingLab/MUSE2/releases/download/${{ steps.muse2_release.outputs.tag }}/${{ matrix.muse2_asset }}" \
-            --output "muse2_asset_download"
-
-      - name: Extract MUSE2 and set environment variable (Linux / macOS)
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        shell: bash
-        run: |
-          mkdir -p muse2_bin
-          tar -xf muse2_asset_download -C muse2_bin
-          chmod +x "muse2_bin/${{ matrix.muse2_exe }}"
-          echo "MUSE2_PATH=${{ github.workspace }}/muse2_bin/${{ matrix.muse2_exe }}" >> "$GITHUB_ENV"
-
-      - name: Extract MUSE2 and set environment variable (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path muse2_bin | Out-Null
-          Rename-Item -Path "muse2_asset_download" -NewName "muse2_asset_download.zip"
-          Expand-Archive -Path "muse2_asset_download.zip" -DestinationPath muse2_bin -Force
-          $exePath = "${{ github.workspace }}\muse2_bin\${{ matrix.muse2_exe }}"
-          echo "MUSE2_PATH=$exePath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
-      # Confirm the muse2 executable is present and the environment variable is set correctly.
-      - name: Verify MUSE2 installation (Linux / macOS)
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        shell: bash
-        run: |
-          if [[ ! -f "$MUSE2_PATH" ]]; then
-            echo "::error::MUSE2 executable not found at: $MUSE2_PATH"
-            exit 1
-          fi
-          echo "MUSE2_PATH is set to: $MUSE2_PATH"
-
-      - name: Verify MUSE2 installation (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          if (-not (Test-Path -Path $env:MUSE2_PATH -PathType Leaf)) {
-            Write-Error "MUSE2 executable not found at: $env:MUSE2_PATH"
-            exit 1
-          }
-          Write-Host "MUSE2_PATH is set to: $env:MUSE2_PATH"
-
-      - name: Run tests
-        run: pytest
-
-      - name: Upload coverage to Codecov
-        if: runner.os == 'Linux'
-        uses: codecov/codecov-action@v6
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: true
+  test_main:
+    name: Current MUSE2 main branch
+    uses: ./.github/workflows/test-with-muse2.yml
+    with:
+      muse2_source: main
+    secrets: inherit
