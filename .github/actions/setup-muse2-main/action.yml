@@ -1,5 +1,5 @@
 name: Setup MUSE2 from main
-description: Build and configure MUSE2_PATH from the MUSE2 main branch via cargo install
+description: Build and install MUSE2 from the MUSE2 main branch via cargo install
 runs:
   using: composite
   steps:

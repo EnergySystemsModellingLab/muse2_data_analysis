@@ -45,8 +45,6 @@ jobs:
       - name: Setup MUSE2 from main
         if: inputs.muse2_source == 'main'
         uses: ./.github/actions/setup-muse2-main
-        with:
-          muse2_exe: ${{ matrix.muse2_exe }}
 
       - name: Setup MUSE2 from latest release
         if: inputs.muse2_source == 'release'
