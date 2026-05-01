@@ -64,7 +64,7 @@ jobs:
       - name: Upload coverage to Codecov
         # Latest linux release only - they should all be the same
         if: runner.os == 'Linux' && inputs.muse2_source == 'release'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
