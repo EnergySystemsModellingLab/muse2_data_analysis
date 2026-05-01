@@ -1,34 +1,35 @@
 name: Verify MUSE2 installation
-description: Validate that MUSE2_PATH points to an executable file for the current OS
+description: Validate that muse2 is available via PATH or MUSE2_PATH for the current OS
 runs:
   using: composite
   steps:
-    - name: Verify MUSE2_PATH (Linux / macOS)
-      if: runner.os == 'Linux' || runner.os == 'macOS'
+    - name: Verify muse2 location
       shell: bash
       run: |
-        if [[ ! -f "$MUSE2_PATH" ]]; then
-          echo "::error::MUSE2 executable not found at: $MUSE2_PATH"
-          exit 1
-        fi
-        if [[ ! -x "$MUSE2_PATH" ]]; then
-          echo "::error::MUSE2 file at $MUSE2_PATH is not executable"
-          exit 1
-        fi
-        echo "MUSE2_PATH is set to: $MUSE2_PATH"
+        set -euo pipefail
 
-    - name: Verify MUSE2_PATH (Windows)
-      if: runner.os == 'Windows'
-      shell: pwsh
-      run: |
-        if (-not (Test-Path -Path $env:MUSE2_PATH -PathType Leaf)) {
-          Write-Error "MUSE2 executable not found at: $env:MUSE2_PATH"
+        path_from_path="$(command -v muse2 || true)"
+        resolved_muse2="${path_from_path:-${MUSE2_PATH:-}}"
+
+        if [[ -z "$resolved_muse2" ]]; then
+          echo "::error::Could not find muse2 on PATH and MUSE2_PATH is not set"
           exit 1
-        }
-        $executableExtensions = @('.exe')
-        $extension = [System.IO.Path]::GetExtension($env:MUSE2_PATH).ToLower()
-        if ($executableExtensions -notcontains $extension) {
-          Write-Error "MUSE2 file at $env:MUSE2_PATH does not have an executable extension"
+        fi
+
+        if [[ ! -f "$resolved_muse2" ]]; then
+          echo "::error::MUSE2 executable not found at: $resolved_muse2"
           exit 1
-        }
-        Write-Host "MUSE2_PATH is set to: $env:MUSE2_PATH"
+        fi
+
+        if [[ ! -x "$resolved_muse2" ]]; then
+          echo "::error::MUSE2 file at $resolved_muse2 is not executable"
+          exit 1
+        fi
+
+        if [[ -n "$path_from_path" ]]; then
+          echo "Found muse2 on PATH: $resolved_muse2"
+        else
+          echo "Using MUSE2_PATH: $resolved_muse2"
+        fi
+
+        echo "MUSE2_PATH=$resolved_muse2" >> "$GITHUB_ENV"
