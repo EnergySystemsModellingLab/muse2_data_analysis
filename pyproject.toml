@@ -8,12 +8,12 @@ authors = [
 ]
 requires-python = ">=3.14"
 
-dependencies = ["matplotlib>=3.10.9", "notebook>=7.5.6", "pandas>=3.0.0"]
+dependencies = ["matplotlib>=3.10.9", "notebook>=7.5.6", "pandas>=3.0.3"]
 
 [dependency-groups]
 dev = [
     "ruff>=0.15.12",
-    "mypy>=2.0.0",
+    "mypy>=2.1.0",
     "pre-commit>=4.6.0",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
