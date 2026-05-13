@@ -17,7 +17,7 @@ runs:
       run: |
         gh release download \
           --repo EnergySystemsModellingLab/MUSE2 \
-          --pattern "${{ runner.os == 'Windows' && 'muse2_windows.zip' || runner.os == 'macOS' && 'muse2_macos_arm.tar.gz' || 'muse2_linux.tar.gz' }}" \
+          --pattern "${{ runner.os == 'Windows' && 'muse2_windows*.zip' || runner.os == 'macOS' && 'muse2_macos_arm*.tar.gz' || 'muse2_linux*.tar.gz' }}" \
           --output "muse2_asset_download" \
           --clobber
 
