@@ -11,7 +11,7 @@ from muse2_data_analysis import muse2
 
 
 @pytest.fixture(autouse=True)
-def reset_muse2_path() -> Generator[None]:
+def reset_muse2_path() -> Generator[None, None, None]:
     """Reset the cached MUSE2 path before and after each test.
 
     Note this won't work if tests are run in parallel.
