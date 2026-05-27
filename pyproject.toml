@@ -31,7 +31,6 @@ disallow_untyped_defs = true
 exclude = [".venv/", "docs/"]
 
 [[tool.mypy.overrides]]
-module = "tests.*"
 disallow_untyped_defs = false
 
 [tool.pytest.ini_options]
