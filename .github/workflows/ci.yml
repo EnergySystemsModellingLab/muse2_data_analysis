@@ -1,4 +1,5 @@
-name: Test against MUSE2
+name: Test with MUSE2
+
 on:
   push:
     branches: [main]
@@ -6,19 +7,45 @@ on:
   schedule:
     - cron: 0 5 * * 1
   workflow_dispatch:
-  workflow_call:
+  release:
+    types: [published]
 
 jobs:
-  # test_release:
-  #   name: Latest MUSE2 release
-  #   uses: ./.github/workflows/test-with-muse2.yml
-  #   with:
-  #     muse2_source: release
-  #   secrets: inherit
+  test:
+    name: Run Pytest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
-  test_main:
-    name: Current MUSE2 main branch
-    uses: ./.github/workflows/test-with-muse2.yml
-    with:
-      muse2_source: main
-    secrets: inherit
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          prune-cache: false
+          activate-environment: true
+          python-version: '3.14'
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Setup MUSE2 from main
+        uses: ./.github/actions/setup-muse2-main
+
+      - name: Verify MUSE2 installation
+        uses: ./.github/actions/verify-muse2
+
+      - name: Run tests
+        run: pytest
+
+      - name: Upload coverage to Codecov
+        # Latest linux release only - they should all be the same
+        if: runner.os == 'Linux' && github.event_name == 'release'
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: true
