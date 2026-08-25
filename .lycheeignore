@@ -1,0 +1,4 @@
+# Stack Exchange blocks Lychee's automated requests with HTTP 403.
+https://stackoverflow\.com/.*
+https://unix\.stackexchange\.com/.*
+https://apple\.stackexchange\.com/.*
